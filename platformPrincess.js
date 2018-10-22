@@ -108,3 +108,22 @@ class Door extends Sprite{
         }
     }
 }
+let exit = new Door();
+exit.name = ("The Exit Door");
+
+class Spider extends Sprite{
+    constructor(x, y){
+        super();
+        this.name = ("Spider");
+        this.setImage("spider.png");
+        this.x = x;
+        this.y = y;
+        this.speed = 48;
+        this.accelerateOnBounce = false;
+        this.defineAnimation("creep", 0, 3);
+        this.playAnimation("creep", true);
+        
+    }
+}
+new Spider(200, 225);
+new Spider(550, 200);
