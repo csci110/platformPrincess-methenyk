@@ -14,7 +14,6 @@ class Support extends Sprite {
         this.x = x;
         this.y = y;
         this.setImage(image);
-        
     }
 }
 class Platform extends Support {
@@ -33,6 +32,7 @@ let finishPlatform = new Platform();
     finishPlatform.x = game.displayWidth - 48 * 2;
     finishPlatform.y = 400;
     finishPlatform.setImage("finish.png");
+    
     
 class Slider extends Support{
     constructor(x, y, angle){
@@ -104,7 +104,7 @@ class Door extends Sprite{
     }
     handleCollision(otherSprite){
         if(otherSprite === ann){
-            game.end('Congratulations!\n\nPrincess Ann can now pursue the\nstranger deeper into the castle!');
+            game.end = 'Congratulations!\n\nPrincess Ann can now pursue the\nstranger deeper into the castle!';
         }
     }
 }
@@ -124,6 +124,67 @@ class Spider extends Sprite{
         this.playAnimation("creep", true);
         
     }
+    handleGameLoop(){
+        if(Spider>Slider){
+            this.angle = 270;            
+        }
+        if(Spider<Slider){
+            this.angle = 90;
+        }
+    }
+        handleCollision(otherSprite) {
+    // Spiders only care about collisons with Ann.
+    if (otherSprite === ann) {
+        // Spiders must hit Ann on top of her head.
+        let horizontalOffset = this.x - otherSprite.x;
+        let verticalOffset = this.y - otherSprite.y;
+        if (Math.abs(horizontalOffset) < this.width / 2 && 
+            Math.abs(verticalOffset) < 30) {
+                otherSprite.y = otherSprite.y + 1; // knock Ann off platform
+        }
+    }
+    return false;
+}
 }
 new Spider(200, 225);
 new Spider(550, 200);
+
+class Bat extends Sprite{
+    constructor(x, y){
+        super();
+        this.setImage("bat.png");
+        this.x = x;
+        this.y = y;
+        this.accelerateOnBounce = false;
+        this.name == "A scary Bat";
+        this.defineAnimation("flap", 0, 1);
+        this.playAnimation("flap", true);
+        this.attackSpeed = 300;
+        
+    }
+    attack(){
+        this.speed = this.attackSpeed;
+        this.aimFor(ann.x, ann.y);
+    }
+    handleCollision(otherSprite){
+        if(otherSprite == ann){
+            let horizontalOffset = this.x - otherSprite.x;
+            let verticalOffset = this.y - otherSprite.y;
+            if(Math.abs(horizontalOffset)<this.width / 2 &&
+                Math.abs(verticalOffset) < 30){
+                    otherSprite.y = otherSprite.y + 1;
+                }
+        }
+        return false;
+    }
+    handleGameLoop(){
+        if(Math.random < 0.001){
+           Bat.attack();
+        }
+        //if bat is not attacking: hover
+    }
+}
+let leftBat = new Bat();
+leftBat.x = 200;
+leftBat.y = 100;
+new Bat(500, 75, "rightBat");
