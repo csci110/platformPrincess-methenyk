@@ -1,4 +1,5 @@
 import { game, Sprite } from "./sgc/sgc.js";
+
 game.setBackground("water.png", 500, 0);
 
 let Wall = new Sprite();
@@ -92,6 +93,7 @@ class Princess extends Sprite {
         game.end('Princess Ann has drowned.\n\nBetter luck next time.');
     }
 }
+
 let ann = new Princess();
 
 class Door extends Sprite {
@@ -114,7 +116,7 @@ exit.name = ("The Exit Door");
 class Spider extends Sprite {
     constructor(x, y) {
         super();
-        this.name = ("Spider");
+        this.name = "Spider";
         this.setImage("spider.png");
         this.x = x;
         this.y = y;
@@ -125,11 +127,11 @@ class Spider extends Sprite {
 
     }
     handleGameLoop() {
-        if (Spider > Slider) {
-            this.angle = 270;
-        }
-        if (Spider < Slider) {
+        if (this.y > ann.y) {
             this.angle = 90;
+        }
+        if (this.y < ann.y - 48) {
+            this.angle = 270;
         }
 
     }
@@ -161,49 +163,48 @@ class Bat extends Sprite {
         this.defineAnimation("flap", 0, 1);
         this.playAnimation("flap", true);
         this.attackSpeed = 300;
-        this.speed = this.normalSpeed = 20;
+        this.normalSpeed = 20;
         this.angle = 45 + Math.round(Math.random() * 3) * 90;
         this.angleTimer = 0;
     }
     attack() {
-        this.speed = this.attackSpeed;
+        this.attackSpeed = 300;
         this.aimFor(ann.x, ann.y);
     }
     handleCollision(otherSprite) {
-        let horizontalOffset = this.x;
-        let verticalOffset = this.y;
-        if (otherSprite == ann) {
-            if (Math.abs(horizontalOffset) < this.width / 2 &&
-                Math.abs(verticalOffset) < 30) {
+        if (otherSprite === ann) {
+            let horizontalOffset = this.x - otherSprite.x;
+            let verticalOffset = this.y - otherSprite.y;
+            if (Math.abs(horizontalOffset) < this.width / 2 && Math.abs(verticalOffset) < 30) {
                 otherSprite.y = otherSprite.y + 1;
             }
         }
         return false;
     }
-    handleGameLoop() {
-        if (Math.random < 0.001) {
-            this.attack();
-        }
-        if (this.normalSpeed) {
-            this.angle = 45 + Math.round(Math.random() * 5) * 90;
-            this.angle = 45 + Math.round(Math.random() * 5) * 180;
-            this.angleTimer = 5;
-
-        }
-    }
     handleBoundaryContact() {
         if (this.y < 0) {
-            this.y = 0;
+            this.y === 0;
         }
         if (this.y > game.displayHeight) {
-            this.x = this.x;
-            this.y = this.y;
+            this.y = this.startY;
             this.speed = this.normalSpeed;
             this.angle = 225;
         }
     }
+    handleGameLoop() {
+        if (Math.random < 0.01) {
+            this.attack();
+        }
+        if (Math.round(this.speed) === this.normalSpeed) {
+            this.angleTimer = 45 + Math.round(Math.random() * 5) * 90;
+            this.angleTimer = 45 + Math.round(Math.random() * 5) * 180;
+            this.speed = this.normalSpeed;
+
+        }
+    }
 }
+
+new Bat(500, 75, "rightBat");
 let leftBat = new Bat();
 leftBat.x = 200;
 leftBat.y = 100;
-new Bat(500, 75, "rightBat");
